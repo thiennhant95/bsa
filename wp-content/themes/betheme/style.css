@@ -1,0 +1,128 @@
+/*
+Theme Name: Betheme
+Author: Muffin group
+Description: The biggest WordPress Theme ever
+Theme URI: http://themes.muffingroup.com/betheme
+Author URI: http://muffingroup.com
+License: Themeforest Split Licence
+License URI: -
+Version: 17.6
+
+All css files are placed in /css/ folder
+*/
+#Subheader{
+    display: none;
+}
+.menu-item a span{
+    color: #ffffee;
+}
+#Top_bar,#Footer{
+    background-color: #005b9a!important;
+}
+.textwidget,.copyright {
+    color: lavender!important;
+}
+.slogan-text .wpb_wrapper p {
+    font-weight: 400;
+    font-size: 46px;
+    color: #0A246A;
+    text-align: center;
+    line-height: 45px;
+    padding: 4%;
+}
+.slogan{
+    background-color: #E1E1E1;
+}
+@media only screen and (max-width: 700px) {
+    .slogan-text .wpb_wrapper p {
+        font-size: 25px;
+    }
+}
+@media only screen and (max-width: 958px) and (min-width: 700px){
+    .slogan-text .wpb_wrapper p {
+        font-size: 35px;
+    }
+}
+@media only screen and (max-width: 480px) {
+    .slogan-text .wpb_wrapper p {
+        font-size: 20px;
+    }
+}
+@media only screen and (min-width: 768px){
+    .layout-boxed.header-boxed .slogan {
+        max-width: 980px!important;
+        width: 100%;
+    }
+}
+#submit-login{
+    border-radius: 15px;
+    width: 100%;
+    background-color: #0A246A;
+}
+#forgot-password{
+    color: #2f2f2f;
+    font-weight: 400;
+}
+#contact-button{
+    border-radius: 15px;
+    width: 100%;
+    background-color: #0A246A;
+}
+.phone-class{
+    text-align: center;
+    color: #0A246A;
+    background-color: #c5dec2;
+    border: 1px solid #4eb305;
+    border-radius: 5px;
+    font-size: 15px;
+    width: 100%;
+    margin-bottom: 20%;
+}
+.phone-class p a{
+    color: #0A246A;
+}
+.phone-class p a:hover{
+    color: #e78c45;
+    text-decoration: none;
+}
+.text-custom{
+    color: #2f2f2f;
+    font-weight: 400;
+    font-size: 13px;
+    width: 100%;
+}
+.table-widgets tr td{
+    color: #0A246A;
+    text-align: left;
+}
+.table-widgets tr td{
+    border-bottom: 0;
+}
+#register-button button{
+    color: #0A246A;
+    font-weight: 400;
+    font-size: 24px;
+}
+.title-home{
+    padding-top: 2%;
+    font-size: 18px;
+    color: #0A246A;
+    font-weight: 400;
+}
+.text-home{
+    color: #1c2d3f;
+    font-size: 15px;
+    font-weight: 400;
+}
+.the-step-to-start{
+    padding: 2%;
+    margin: 2%!important;
+    background-color: #96d0f0;
+    border: 1px solid #0A246A;
+    border-radius: 10px;
+    color: #07080a;
+    font-size: 15px;
+}
+form.wpcf7-form {
+    width: 100%!important;
+}
