@@ -126,3 +126,7 @@ All css files are placed in /css/ folder
 form.wpcf7-form {
     width: 100%!important;
 }
+.text-top-member{
+    color: #1c2d3f;
+    font-size: 13px;
+}

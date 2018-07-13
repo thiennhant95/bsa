@@ -152,6 +152,13 @@ if( mfn_opts_get( 'retina-js' ) ){
 
 // Hide activation and update specific parts ------------------------------------
 
+/* Khởi tạo session */
+function myStartSession() {
+    session_start();
+}
+add_action('init', 'myStartSession');
+
+#---------------------------------
 // Slider Revolution
 if( ! mfn_opts_get( 'plugin-rev' ) ){
 	if( function_exists( 'set_revslider_as_theme' ) ){
@@ -175,22 +182,34 @@ if( ! mfn_opts_get( 'plugin-visual' ) ){
 		vc_set_as_theme();
 	}
 }
+
 function forgot(){
     ob_start();
     ?>
     <div class="container">
-    <div class="row">
-    <div class="div-forgot">
-    <form action="" method="post">
-        <label>Tên: <input style="border-radius: 10px" type="text" name="username" required></label>
-        <label>Email: <input style="border-radius: 10px" type="email" name="username" required></label>
-        <?php
-        echo do_shortcode('[bws_google_captcha]');
-        ?>
-        <input type="submit" value="GỬI ĐI">
-    </form>
-    </div>
-    </div>
+        <div class="row">
+            <?php
+            if (isset($_SESSION['thongbaothanhcong']) && $_SESSION['thongbaothanhcong']==1)
+            {
+                ?>
+                <div style="width: 100%;color: #AF0000;font-size: 15px">
+                Chúng tôi đã gửi cho bạn link tạo tài khoản mới. Vui lòng kiểm tra email của bạn.
+                </div>
+                <?php
+                $_SESSION['thongbaothanhcong']=0;
+            }
+            ?>
+            <div class="div-forgot">
+                <form action="<?php echo home_url('processing-forgot')?>" method="post">
+                    <label>Tên: <input style="border-radius: 10px" type="text" name="username" required></label>
+                    <label>Email: <input style="border-radius: 10px" type="email" name="email" required></label>
+                    <?php
+                    echo do_shortcode('[bws_google_captcha]');
+                    ?>
+                    <input type="submit" value="GỬI ĐI">
+                </form>
+            </div>
+        </div>
     </div>
     <?php
     $data = ob_get_contents();
@@ -202,11 +221,46 @@ add_shortcode('forgot_password', 'forgot');
 function set_password(){
     ob_start();
     ?>
+    <?php
+    if (isset($_SESSION['loi_forgot']) && $_SESSION['loi_forgot']==1)
+    {
+        ?>
+        <div style="color: #AF0000;font-size: 15px;font-weight: 400">
+        Mật khẩu nhập lại không giống.
+        </div>
+        <?php
+        $_SESSION['loi_forgot']=0;
+    }
+    if (isset($_SESSION['loi_forgot']) && $_SESSION['loi_forgot']==2)
+    {
+        ?>
+        <div style="color: #AF0000;font-size: 15px;font-weight: 400">
+        Mật khẩu phải lớn hơn 6 kí tự.
+        </div>
+        <?php
+        $_SESSION['loi_forgot']=0;
+    }
+    if (isset($_SESSION['loi_forgot']) && $_SESSION['loi_forgot']==3)
+    {
+        ?>
+        <div style="color: #AF0000;font-size: 15px;font-weight: 400">
+        Đổi mật khẩu không thành công.<br/>Vui lòng thử lại.
+        </div>
+        <?php
+        $_SESSION['loi_forgot']=0;
+    }
+
+    ?>
     <div class="container">
         <div class="row">
             <div class="div-forgot">
-                <form action="" method="post">
-                    <label>Tên: ABCD</label>
+                <form action="<?php echo home_url('new-pass-word')?>" method="post">
+                    <input type="hidden" value="<?php echo $_POST['email_forgot']?>" name="email_forgot">
+                    <?php
+                    $current_url = base64_encode($_SERVER['REQUEST_URI']);
+                    ?>
+                    <input type="hidden" name="return_url" value="<?php echo $current_url ?>" />
+                    <label>Tên: <?php echo $_POST['user_forgot'];?></label>
                     <label>Mật khẩu mới: <input style="border-radius: 10px" type="password" minlength="6" name="password_new" required></label>
                     <label>Xác nhận lại: <input style="border-radius: 10px" type="password" minlength="6"  name="password_confirm" required></label>
                     <input type="submit" value="CHẤP NHẬN">
@@ -292,3 +346,70 @@ function plugin_shortcode_video(){
     return $list_post;
 }
 add_shortcode('shortcode_video', 'plugin_shortcode_video');
+
+add_filter('wp_mail_smtp_custom_options', function( $phpmailer ) {
+    return $phpmailer->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+});
+
+add_action('init', function() {
+    $url_path = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
+    $path = explode("/",$url_path);
+    $templatename = 'handing-login';
+    if($path[0] == $templatename){
+        $load = locate_template('handling_login.php', true);
+        if ($load) {
+            exit();
+        }
+    }
+});
+
+
+function sidebar_member(){
+    ob_start();
+    ?>
+    <div class="sidebar sidebar-1 four columns1">
+        <div class="widget-area clearfix " style="min-height: 1032px;">
+            <aside id="custom_html-2" class="widget_text widget widget_custom_html">
+                <div class="textwidget custom-html-widget">
+
+                </div>
+            </aside>
+        </div>
+    </div>
+    <?php
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
+add_shortcode('sidebar_member_right', 'sidebar_member');
+
+add_action('init', function() {
+    $url_path = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
+    $path = explode("/",$url_path);
+    $templatename = 'processing-forgot';
+    if($path[0] == $templatename){
+        $load = locate_template('processing_forgot.php', true);
+        if ($load) {
+            exit();
+        }
+    }
+});
+
+add_action('init', function() {
+    $url_path = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
+    $path = explode("/",$url_path);
+    $templatename = 'new-pass-word';
+    if($path[0] == $templatename){
+        $load = locate_template('new_pass.php', true);
+        if ($load) {
+            exit();
+        }
+    }
+});
+

@@ -1,4 +1,35 @@
 <?php
+if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
+{
+    if (!isset($_GET['token'])){
+        global $wp_query;
+        $wp_query->set_404();
+        status_header( 404 );
+        get_template_part( 404 );
+        die();
+    }
+    else
+    {
+        $table_team = $wpdb->prefix."members";
+        $data_prepare = $wpdb->prepare("SELECT * FROM $table_team WHERE forgot_token = %s",$_GET['token']);
+        $data_team = $wpdb->get_row($data_prepare);
+        if ($data_team)
+        {
+          $_POST['email_forgot']=$data_team->member_email;
+          $_POST['user_forgot']=$data_team->member_username;
+        }
+        else
+        {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header( 404 );
+            get_template_part( 404 );
+            die();
+        }
+    }
+}
+?>
+<?php
 /**
  * The Header for our theme.
  *
