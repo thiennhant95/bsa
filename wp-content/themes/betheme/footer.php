@@ -140,11 +140,62 @@ if( $back_to_top_class == 'hide' ){
 		}
 	?>
 
-	
+    <?php
+    if (strpos($_SERVER['REQUEST_URI'],'admin-top') || strpos($_SERVER['REQUEST_URI'],'admin-members'))
+    {
+        ?>
+        <script>
+            jQuery(function($){
+                $("#menu-item-68").css({"display":"none"});
+                $("#menu-item-178").css({"display":"none"});
+                $("#menu-item-176").css({"display":"none"});
+                $("#menu-item-177").css({"display":"none"});
+                $("#menu-main-menu").append('<li id="menu-item-68" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-top/"><span>Videos</span></a> </li>');
+                $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-members/"><span>Members</span></a> </li>');
+                $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
+            });
+        </script>
+    <?php
+    }
+    if (strpos($_SERVER['REQUEST_URI'],'videos-detail') || strpos($_SERVER['REQUEST_URI'],'member-top'))
+    {
+        ?>
+    <script>
+        jQuery(function($) {
+            $("#menu-item-176").css({"display":"none"});
+            $("#menu-item-177").css({"display":"none"});
+            $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
+        });
+    </script>
+        <?php
+    }
+    ?>
+    <script>
+        var radioState = false;
+        function test(element){
+            if(radioState == false) {
+                check();
+                radioState = true;
+            }else{
+                uncheck();
+                radioState = false;
+            }
+        }
+        function check() {
+            document.getElementById("radioBtn").checked = true;
+        }
+        function uncheck() {
+            document.getElementById("radioBtn").checked = false;
+        }
+    </script>
 </footer>
 
 </div><!-- #Wrapper -->
-
+<style>
+    img.logo-mobile.scale-with-grid{
+        width: 255px!important; height: 60px;
+    }
+</style>
 <?php 
 	// Responsive | Side Slide
 	if( mfn_opts_get( 'responsive-mobile-menu' ) ){
@@ -172,6 +223,18 @@ if( $back_to_top_class == 'hide' ){
 	
 <!-- wp_footer() -->
 <?php wp_footer(); ?>
-
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/5b4f1334df040c3e9e0baee8/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>

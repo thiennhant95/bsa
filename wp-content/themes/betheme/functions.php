@@ -325,7 +325,7 @@ function plugin_shortcode_video(){
         </div>
         <?php
     }
-    $list_videos = "SELECT * FROM $table_video WHERE status = 1";
+    $list_videos = "SELECT * FROM $table_video WHERE video_type = 0 ORDER BY id ASC";
     $data_video1 =$wpdb->get_results($list_videos);
     ?>
     <style>
@@ -368,16 +368,129 @@ add_action('init', function() {
         }
     }
 });
+add_action('init', function() {
+    $url_path = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
+    $path = explode("/",$url_path);
+    $templatename = 'test';
+    if($path[0] == $templatename){
+        $load = locate_template('test.php', true);
+        if ($load) {
+            exit();
+        }
+    }
+});
 
 
 function sidebar_member(){
     ob_start();
     ?>
+    <style>
+        .tag-a-sidebar:hover{
+            text-decoration: none;
+        }
+        .tag-a-sidebar{
+            font-size: 14px;
+            color: #0A246A;
+            font-weight: 500;
+        }
+    </style>
     <div class="sidebar sidebar-1 four columns1">
         <div class="widget-area clearfix " style="min-height: 1032px;">
             <aside id="custom_html-2" class="widget_text widget widget_custom_html">
-                <div class="textwidget custom-html-widget">
+                <div class="textwidget custom-html-widget" style="color: #0a0a0a!important;">
+                    <?php
+                    global $wpdb;
+                    $table_video = $wpdb->prefix."video_rookie";
+                    $query_video_a = "SELECT * FROM $table_video WHERE status = 1";
+                    $data_video_a =$wpdb->get_results($query_video_a);
 
+                    $table_members = $wpdb->prefix."members";
+                    $data_prepare = $wpdb->prepare("SELECT * FROM $table_members WHERE member_username = %s",$_SESSION['member_username']);
+                    $data_members = $wpdb->get_row($data_prepare);
+                    $week = json_decode($data_members->week);
+                    $current_week =end($week);
+
+                    $table_week = $wpdb->prefix."week";
+                    $data_prepare1 = $wpdb->prepare("SELECT * FROM $table_week WHERE num_week = %d",$current_week);
+                    $data_week = $wpdb->get_row($data_prepare1);
+
+                    $query_week_a = "SELECT * FROM $table_week";
+                    $data_list_week =$wpdb->get_results($query_week_a);
+
+
+                    ?>
+                    <h6><?php echo $data_week->name_week ?></h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_video_a as $row)
+                    {
+                        if ($row->week==$current_week && $row->category==1)
+                        {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('videos-detail/?videos='.$row->id)?>"><?php echo $row->video_name ?></a>
+                            <br/>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                    <h6>Xem lại bài trước</h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_list_week as $row)
+                    {
+                        if ($row->num_week < $current_week)
+                        {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('back-number-list/?week='.$row->num_week)?>"><?php echo $row->name_week ?></a>
+                            <br/>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                    <h6>Getting Started</h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_video_a as $row)
+                    {
+                        if ($row->category==0)
+                        {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('videos-detail/?videos='.$row->id)?>"><?php echo $row->video_name ?></a>
+                            <br/>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                    <h6>Xem lại và các nội dung đặc biệt</h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_video_a as $row)
+                    {
+                        if ($row->category==2)
+                        {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('videos-detail/?videos='.$row->id)?>"><?php echo $row->video_name ?></a>
+                            <br/>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                    <a href="/contact/"><button id="contact-button" style="font-size: 12px">Liên hệ với chúng tôi</button>
+                    </a>
+                    <br/>
+                    <br/>
+                    <div class="phone-class">
+                        <p>
+                            Liên hệ qua điện thoại
+                        </p>
+                        <p>
+                            <a href="tel:0898897896">0898 897 896</a>
+                        </p>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -413,3 +526,520 @@ add_action('init', function() {
     }
 });
 
+add_action('init', function() {
+    $url_path = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
+    $path = explode("/",$url_path);
+    $templatename = 'te';
+    if($path[0] == $templatename){
+        $load = locate_template('new_pass.php', true);
+        if ($load) {
+            exit();
+        }
+    }
+});
+
+
+function check_login(){
+    ob_start();
+    global $wpdb;
+    if (!isset($_SESSION['login']) && !isset($_SESSION['member_username']))
+    {
+        ?>
+        <script>window.location='<?php echo home_url()?>'</script>
+    <?php
+    }
+    else
+    {
+        $table_team = $wpdb->prefix."members";
+        $data_prepare = $wpdb->prepare("SELECT * FROM $table_team WHERE member_username = %s AND type=%d",$_SESSION['member_username'],0);
+        $data_team = $wpdb->get_row($data_prepare);
+        if (!$data_team){
+          ?>
+            <script>window.location='<?php echo home_url()?>'</script>
+            <?php
+            exit;
+        }
+    }
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
+add_shortcode('check_login', 'check_login');
+
+function free_list()
+{
+    ob_start();
+    global $wpdb;
+    $table_video = $wpdb->prefix."video_rookie";
+    $query_video_a = "SELECT * FROM $table_video WHERE video_type=0 ORDER BY id ASC";
+    $data_video =$wpdb->get_results($query_video_a);
+    ?>
+    <style>.free-list{
+            color: #0A246A;
+            font-size: 14px;
+        }</style>
+    <table class="table-widgets">
+        <?php
+        foreach ($data_video as $row){
+            ?>
+            <tr>
+                <td><a class="free-list" href="/free-contents-list/?videos=<?php echo $row->id ?>"><?php echo $row->video_name ?></a></td>
+            </tr>
+            <?php
+        }
+        ?>
+    </table>
+    <?php
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
+add_shortcode('free_list','free_list');
+
+function message_login(){
+    ob_start();
+    if (isset($_SESSION['login']) && $_SESSION['login']=='thatbai_1')
+    {
+        ?>
+        <span style="color: #AF0000">Tài khoản hoặc mật khẩu không đúng.</span>
+        <?php
+        unset($_SESSION['login']);
+    }
+    if (isset($_SESSION['login']) && $_SESSION['login']=='thatbai')
+    {
+        ?>
+        <span style="color: #AF0000">Đã xãy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại.</span>
+        <?php
+        unset($_SESSION['login']);
+    }
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
+add_shortcode('message_login', 'message_login');
+
+function plugin_shortcode_video_detail(){
+    global $wpdb;
+    $table_members = $wpdb->prefix."members";
+    $data_prepare = $wpdb->prepare("SELECT * FROM $table_members WHERE member_username = %s",$_SESSION['member_username']);
+    $data_members = $wpdb->get_row($data_prepare);
+    $week = json_decode($data_members->week);
+    $current_week =end($week);
+
+    $table_week = $wpdb->prefix."week";
+    $data_prepare1 = $wpdb->prepare("SELECT * FROM $table_week WHERE num_week = %d",$current_week);
+    $data_week = $wpdb->get_row($data_prepare1);
+
+    if (isset($_GET['videos']))
+    {
+        $id=$_GET['videos'];
+    }
+    else{
+        $id=-1;
+    }
+
+    $table_video = $wpdb->prefix."video_rookie";
+    $query_video = $wpdb->prepare("SELECT * FROM $table_video WHERE id = %d",$id);
+    $data_video = $wpdb->get_row($query_video);
+    $search = array('\r\n','&lt;br&gt;','\&quot;','\&amp;','\&#039;','\"','&lt;','&gt;');
+    $replace = array('<br>','<br>','"','&amp;','&#039','"','<','>');
+    ob_start();
+    ?>
+    <style>
+        .load_video iframe{ width: 100%;}
+    </style>
+        <div class="wpb_column vc_column_container load_video">
+            <div class="vc_column-inner ">
+                <div class="wpb_wrapper">
+                    <div class="wpb_text_column wpb_content_element ">
+                        <?php
+                        if ($data_video==null):
+                        {
+                            ?>
+                            <h5>Videos Không tồn tại.</h5>
+                            <?php
+
+                        }
+                        elseif ($data_video!=null && $data_video->category==1):
+                        if ($data_video->week<=$current_week):
+                        ?>
+                        <h4 style="color:#0a0a0a "><?php echo '■ '.$data_video->video_name?></h4>
+                        <p style="color:#0a0a0a "><?php echo $data_video->content ?></p>
+                        <div class="wpb_wrapper">
+                            <p>
+                                <?php
+//                                if($data_video->video_type == 0){
+                                    echo str_replace($search, $replace,$data_video->video_url);
+//                                }
+//                                if($data_video->video_type == 1){
+//                                    ?>
+<!--                                    <iframe src="--><?php //echo $data_video->video_url ?><!--"></iframe>-->
+<!--                                    -->
+                                <?php
+//                                }
+                                ?>
+                            </p>
+                        </div>
+                        <?php
+                        elseif($data_video->week > $current_week):
+                            ?>
+                        <h5>Bạn chưa được phép xem Videos này.</h5>
+                        <?php
+                            else:
+                                ?>
+                                <h5>Videos Không tồn tại.</h5>
+                            <?php
+                        endif;
+                        else:
+                            ?>
+                            <h4 style="color:#0a0a0a "><?php echo '■ '.$data_video->video_name?></h4>
+                            <p style="color:#0a0a0a "><?php echo $data_video->content ?></p>
+                            <div class="wpb_wrapper">
+                                <p>
+                                    <?php
+//                                    if($data_video->video_type == 0){
+                                        echo str_replace($search, $replace,$data_video->video_url);
+//                                    }
+//                                    if($data_video->video_type == 1){
+//                                        ?>
+<!--                                        <iframe src="--><?php //echo $data_video->video_url ?><!--"></iframe>-->
+<!--                                        -->
+                                    <?php
+//                                    }
+                                    ?>
+                                </p>
+                            </div>
+                        <?php
+                            endif;
+
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    $list_post = ob_get_contents();
+    ob_end_clean();
+    return $list_post;
+}
+add_shortcode('shortcode_video_detail', 'plugin_shortcode_video_detail');
+
+
+function plugin_shortcode_video_week(){
+    global $wpdb;
+    if (isset($_GET['week']))
+    {
+        $id=$_GET['week'];
+    }
+    else{
+        $id=-1;
+    }
+    $table_week = $wpdb->prefix."week";
+    $data_prepare1 = $wpdb->prepare("SELECT * FROM $table_week WHERE num_week = %d",$id);
+    $data_week = $wpdb->get_row($data_prepare1);
+
+    $table_video = $wpdb->prefix."video_rookie";
+    $query_video_a = "SELECT * FROM $table_video WHERE status = 1";
+    $data_video =$wpdb->get_results($query_video_a);
+    ob_start();
+    ?>
+    <style>
+        .list-videos:hover{
+            color: #AF0000!important;
+        }
+    </style>
+    <?php
+    if ($data_week!=null)
+    {
+        ?>
+        <h3 style="color: #0A246A"><?php echo $data_week->name_week ?></h3>
+        <hr>
+        <br>
+        <p style="color: #1c2d3f">
+            <?php
+            echo $data_week->content_week;
+            ?>
+        </p>
+        <br>
+        <br>
+        <?php
+    }
+    foreach ($data_video as $row):
+        if ($data_week==null):
+            ?>
+        <h5>Không có Videos phù hợp.</h5>
+        <?php
+        break;
+            elseif ($data_week->num_week ==$row->week):
+        ?>
+        <p><a class="list-videos" style="color: #1c2d3f;font-size: 18px;font-weight: 500" href='<?php echo home_url('video-detail?videos='.$row->id)?>'><?php echo $row->video_name ?></a></p>
+        <?php
+        endif;
+        ?>
+    <?php
+    endforeach;
+    $list_post = ob_get_contents();
+    ob_end_clean();
+    return $list_post;
+}
+add_shortcode('shortcode_video_week', 'plugin_shortcode_video_week');
+
+function upload_video()
+{
+    ob_start();
+    ?>
+    <style>
+        .load_video iframe{ width: 100%;}
+        select,input[type=text],textarea{
+           display: inline;
+            padding-left: 10px;
+        }
+        select{
+            width: 30%;
+        }
+        input[type=text]{
+            width: 60%;
+        }
+        label{
+            color: #0a0a0a;
+        }
+        textarea{
+            vertical-align: top;
+            width: 60%;
+        }
+        .upload_video_upload,.button-upload{
+            background-color: darkgray!important;
+            border-radius: 10px!important;
+            width: 20%!important;
+        }
+    </style>
+    <div class="wpb_column vc_column_container load_video">
+        <div class="vc_column-inner ">
+            <div class="wpb_wrapper">
+                <div class="wpb_text_column wpb_content_element">
+                    <form action="<?php ?>" method="post">
+                        <label>Tuần &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <select>
+                                <?php
+                                for($i=1;$i<=20;$i++) {
+                                    ?>
+                                    <option><?php echo $i;?></option>
+                                    <?php
+                                }
+                                    ?>
+                            </select>
+                        </label>
+                        <label>Tên &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="text" name="name_week"></label>
+                        <label>Bài  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <select >
+                                <?php
+                                for($i=1;$i<=20;$i++) {
+                                    ?>
+                                    <option><?php echo $i;?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </label>
+                        <label><input type="radio" name="free" value="1"><input type="radio" name="free" value="0">
+                        </label>
+                        <label>Tập tin &nbsp;&nbsp;&nbsp;&nbsp;
+                            <?php
+                            if(function_exists( 'wp_enqueue_media' )){
+                                wp_enqueue_media();
+                            }else{
+                                wp_enqueue_style('thickbox');
+                                wp_enqueue_script('media-upload');
+                                wp_enqueue_script('thickbox');
+                            }
+                            ?>
+                            <iframe src="<?php echo get_option('upload_video'); ?>" name="upload_video" width="300px" height="250px" class="upload_video" id="display_iframe" style="display:none"></iframe>
+                            <button class="upload_video_upload button button-primary margin-top20">Upload</button>
+                            <input type="hidden" name="upload_video" class="upload_video_upload" hidden="hidden" value="<?php echo get_option('upload_video'); ?>">
+                        </label>
+                            <label> Mô tả &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <textarea name="" rows="6">
+
+                        </textarea>
+                            <label>
+                            <input class="button-upload" type="reset">
+                            <input class="button-upload" type="submit" value="Tải lên">
+                            </label>
+                        </label>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    $list_post = ob_get_contents();
+    ob_end_clean();
+    return $list_post;
+}
+add_shortcode('upload_video', 'upload_video');
+
+add_action( 'wp_enqueue_scripts', 'the_dramatist_enqueue_scripts' );
+//add_filter( 'ajax_query_attachments_args', 'the_dramatist_filter_media' );
+/**
+ * Call wp_enqueue_media() to load up all the scripts we need for media uploader
+ */
+function the_dramatist_enqueue_scripts() {
+//    wp_enqueue_media();
+    wp_enqueue_script(
+        'some-script',
+        get_template_directory_uri() . '/js/media-uploader.js',
+        array( 'jquery' ),
+        null
+    );
+}
+
+//function the_dramatist_filter_media( $query ) {
+//    // admins get to see everything
+//    if ( ! current_user_can( 'manage_options' ) )
+//        $query['author'] = get_current_user_id();
+//    return $query;
+//}
+
+function sidebar_admin(){
+    ob_start();
+    ?>
+    <style>
+        .tag-a-sidebar:hover{
+            text-decoration: none;
+        }
+        .tag-a-sidebar{
+            font-size: 14px;
+            color: #0A246A;
+            font-weight: 500;
+        }
+    </style>
+    <div class="sidebar sidebar-1 four columns1">
+        <div class="widget-area clearfix " style="min-height: 1032px;">
+            <aside id="custom_html-2" class="widget_text widget widget_custom_html">
+                <div class="textwidget custom-html-widget" style="color: #0a0a0a!important;">
+                    <?php
+                    global $wpdb;
+                    $table_video = $wpdb->prefix."video_rookie";
+                    $query_video_a = "SELECT * FROM $table_video WHERE status = 1";
+                    $data_video_a =$wpdb->get_results($query_video_a);
+
+                    $table_members = $wpdb->prefix."members";
+                    $data_prepare = $wpdb->prepare("SELECT * FROM $table_members WHERE member_username = %s",$_SESSION['member_username']);
+                    $data_members = $wpdb->get_row($data_prepare);
+                    $week = json_decode($data_members->week);
+                    $current_week =end($week);
+
+                    $table_week = $wpdb->prefix."week";
+                    $data_prepare1 = $wpdb->prepare("SELECT * FROM $table_week WHERE num_week = %d",$current_week);
+                    $data_week = $wpdb->get_row($data_prepare1);
+
+                    $query_week_a = "SELECT * FROM $table_week";
+                    $data_list_week =$wpdb->get_results($query_week_a);
+
+
+                    ?>
+                    <h6>Danh sách các bài học</h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_list_week as $row)
+                    {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('back-number-list/?week='.$row->id)?>"><?php echo $row->name_week ?></a>
+                            <br/>
+                            <?php
+                    }
+                    ?>
+                    <br/>
+                    <br/>
+                    <h6>Xem lại và các nội dung đặc biệt</h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_video_a as $row)
+                    {
+                        if ($row->category==2)
+                        {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('videos-detail/?videos='.$row->id)?>"><?php echo $row->video_name ?></a>
+                            <br/>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                    <br/>
+                    <h6>Getting Started</h6>
+                    <hr/>
+                    <?php
+                    foreach ($data_video_a as $row)
+                    {
+                        if ($row->category==0)
+                        {
+                            ?>
+                            <a class="tag-a-sidebar" href="<?php echo home_url('videos-detail/?videos='.$row->id)?>"><?php echo $row->video_name ?></a>
+                            <br/>
+                            <?php
+                        }
+                    }
+                    ?>
+                    <br/>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <?php
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
+add_shortcode('sidebar_admin_right', 'sidebar_admin');
+
+function getting_started_right()
+{
+    ob_start();
+    global $wpdb;
+    $search = array('\r\n','&lt;br&gt;','\&quot;','\&amp;','\&#039;','\"','&lt;','&gt;');
+    $replace = array('<br>','<br>','"','&amp;','&#039','"','<','>');
+    $table_video = $wpdb->prefix."video_rookie";
+    $query_video_a = "SELECT * FROM $table_video WHERE category=0";
+    $text= array(
+            1=>'Nhận thức và tư duy là gì ?',
+            2=>'Ý thức và Tư duy',
+            3=>'Training menu'
+    );
+    $i=1;
+    $data_video =$wpdb->get_results($query_video_a);
+    foreach ($data_video as $row) {
+        ?>
+        <div class="vc_col-sm-5 text-home">
+            <p><?php echo $row->video_name ?></p>
+            <p><?php echo $text[$i]?></p>
+        </div>
+        <div class="vc_col-sm-7">
+            <?php
+            echo $row->video_url;
+//            die();
+//            echo str_replace($search, $replace,$row->video_url);
+            ?>
+        </div>
+        <?php
+        $i++;
+    }
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
+add_shortcode('getting_started_right','getting_started_right');
+
+add_action('init', function() {
+    $url_path = trim(parse_url(add_query_arg(array()), PHP_URL_PATH), '/');
+    $path = explode("/",$url_path);
+    $templatename = 'log-out';
+    if($path[0] == $templatename){
+        $load = locate_template('logout.php', true);
+        if ($load) {
+            exit();
+        }
+    }
+});
+?>

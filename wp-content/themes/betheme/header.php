@@ -1,4 +1,24 @@
 <?php
+
+if (strpos($_SERVER['REQUEST_URI'],'admin-top') || strpos($_SERVER['REQUEST_URI'],'admin-members'))
+{
+if (!isset($_SESSION['login']) && !isset($_SESSION['member_username']))
+{
+    $url = home_url('/');
+    wp_redirect($url);
+    exit;
+}
+else{
+    $table_team = $wpdb->prefix."members";
+    $data_prepare = $wpdb->prepare("SELECT * FROM $table_team WHERE member_username = %s AND type=%d",$_SESSION['member_username'],1);
+    $data_team = $wpdb->get_row($data_prepare);
+    if (!$data_team){
+        $url = home_url('/');
+        wp_redirect($url);
+        exit;
+    }
+}
+}
 if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
 {
     if (!isset($_GET['token'])){
@@ -37,7 +57,8 @@ if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
  * @author Muffin group
  * @link http://muffingroup.com
  */
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <?php 
 	if( $_GET && key_exists('mfn-rtl', $_GET) ):
 		echo '<html class="no-js" lang="ar" dir="rtl">';
@@ -252,4 +273,33 @@ if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
 		<?php do_action( 'mfn_hook_content_before' );
 		
 // Omit Closing PHP Tags
+?>
+        <?php
+
+        if (isset($_SESSION['login']) && $_SESSION['login']==1)
+        {
+            ?>
+            <script>
+                jQuery(function($) {
+                    $("#form-login").css({"display": "none"});
+                    $("#forgot-password").css({"display": "none"});
+                    $(".member-login").append('<li><a href="/member-top/">Members Page</a></li>');
+                    $(".member-login").append('<li><a href="/log-out/">Logout</a></li>');
+                });
+            </script>
+            <?php
+        }
+        if (isset($_SESSION['login']) && $_SESSION['login']==2)
+        {
+            ?>
+            <script>
+                jQuery(function($) {
+                    $("#form-login").css({"display": "none"});
+                    $("#forgot-password").css({"display": "none"});
+                    $(".member-login").append('<li><a href="/admin-top/">Admin Page</a></li>');
+                    $(".member-login").append('<li><a href="/log-out/">Logout</a></li>');
+                });
+            </script>
+            <?php
+        }
 ?>
