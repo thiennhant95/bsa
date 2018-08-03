@@ -58,6 +58,7 @@ All css files are placed in /css/ folder
     border-radius: 15px;
     width: 100%;
     background-color: #0A246A;
+    font-size: 15px!important;
 }
 #forgot-password{
     color: #2f2f2f;
@@ -74,7 +75,7 @@ All css files are placed in /css/ folder
     background-color: #c5dec2;
     border: 1px solid #4eb305;
     border-radius: 5px;
-    font-size: 15px;
+    font-size: 16px;
     width: 100%;
     margin-bottom: 20%;
 }
@@ -88,7 +89,7 @@ All css files are placed in /css/ folder
 .text-custom{
     color: #2f2f2f;
     font-weight: 400;
-    font-size: 13px;
+    font-size: 14px;
     width: 100%;
 }
 .table-widgets tr td{
@@ -98,10 +99,10 @@ All css files are placed in /css/ folder
 .table-widgets tr td{
     border-bottom: 0;
 }
-#register-button button{
+#register-button a{
     color: #0A246A;
     font-weight: 400;
-    font-size: 24px;
+    font-size: 18px;
 }
 .title-home{
     padding-top: 2%;
@@ -133,4 +134,48 @@ form.wpcf7-form {
 .member-login li a{
     color: #0A246A;
     font-size: 15px;
+}
+a#back_to_top {
+    margin-bottom: 15px;
+}
+video{
+    max-width: 100% !important;
+    height: auto;
+}
+#Footer .footer_copy {
+    border-top: 3px solid yellow!important;
+}
+#Footer .footer_copy .one {
+    margin-bottom: 6px!important;
+    padding-top: 10px!important;
+    min-height: 10px!important;
+}
+
+@media only screen and (min-width: 768px)
+{
+.layout-boxed.with_aside .content_wrapper{
+    padding-right: 0px!important;
+    }
+}
+#label-submit-login{
+    margin-top: 8%!important;
+}
+#contact-button{
+    font-size: 15px!important;
+}
+div#Top_bar {
+    padding-bottom: 5px;
+}
+.top_bar_left.clearfix {
+    border-bottom: 3px solid yellow;
+}
+.content-fee{
+    color: #07080a!important;
+    font-size: 14px;
+}
+hr{
+    background-color: darkgrey!important;
+}
+#Top_bar.is-sticky {
+    opacity: 1!important;
 }

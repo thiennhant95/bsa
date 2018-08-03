@@ -13,28 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $_SESSION['member_username'] = $data_team->member_username;
 
             if(!empty($_POST["auto_login"])) {
-                setcookie ("member_login",$_POST["username"],time()+ (10 * 365 * 24 * 60 * 60));
-                setcookie ("member_password",$_POST["password"],time()+ (10 * 365 * 24 * 60 * 60));
-            } else {
-                if(isset($_COOKIE["member_login"])) {
-                    setcookie ("member_login","");
-                }
-                if(isset($_COOKIE["member_password"])) {
-                    setcookie ("member_password","");
-                }
+                $_SESSION['auto_login'] = $_POST["auto_login"];
             }
-
             $url = home_url('member-top');
             wp_redirect($url);
             exit();
         }
         elseif($data_team->type==1)
         {
-            $_SESSION['login'] = 2;
+            $_SESSION['login'] = 1;
             $_SESSION['id'] = $data_team->id;
             $_SESSION['member_username'] = $data_team->member_username;
             $_SESSION['admin_login']=1;
             $url = home_url('admin-top');
+            if(!empty($_POST["auto_login"])) {
+                $_SESSION['auto_login'] = $_POST["auto_login"];
+            }
             wp_redirect($url);
             exit();
         }

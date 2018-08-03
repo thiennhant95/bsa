@@ -141,7 +141,7 @@ if( $back_to_top_class == 'hide' ){
 	?>
 
     <?php
-    if (strpos($_SERVER['REQUEST_URI'],'admin-top') || strpos($_SERVER['REQUEST_URI'],'admin-members'))
+    if (strpos($_SERVER['REQUEST_URI'],'admin-top') || strpos($_SERVER['REQUEST_URI'],'admin-members') || strpos($_SERVER['REQUEST_URI'],'training-fee-admin') || strpos($_SERVER['REQUEST_URI'],'member-admin')| strpos($_SERVER['REQUEST_URI'],'admin-edit-video'))
     {
         ?>
         <script>
@@ -150,6 +150,8 @@ if( $back_to_top_class == 'hide' ){
                 $("#menu-item-178").css({"display":"none"});
                 $("#menu-item-176").css({"display":"none"});
                 $("#menu-item-177").css({"display":"none"});
+                $("#menu-main-menu").append('<li id="menu-item-67" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/member-admin/"><span>Home</span></a> </li>');
+                $("#menu-main-menu").append('<li id="menu-item-66" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/training-fee-admin/"><span>Training free</span></a> </li>');
                 $("#menu-main-menu").append('<li id="menu-item-68" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-top/"><span>Videos</span></a> </li>');
                 $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-members/"><span>Members</span></a> </li>');
                 $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
@@ -157,17 +159,74 @@ if( $back_to_top_class == 'hide' ){
         </script>
     <?php
     }
-    if (strpos($_SERVER['REQUEST_URI'],'videos-detail') || strpos($_SERVER['REQUEST_URI'],'member-top'))
-    {
-        ?>
-    <script>
-        jQuery(function($) {
-            $("#menu-item-176").css({"display":"none"});
-            $("#menu-item-177").css({"display":"none"});
-            $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
-        });
-    </script>
+    if (strpos($_SERVER['REQUEST_URI'],'member-top') || strpos($_SERVER['REQUEST_URI'],'back-number-list') || strpos($_SERVER['REQUEST_URI'],'training-fee-member')) {
+        if (isset($_SESSION['admin_login'])) {
+            ?>
+            <script>
+                jQuery(function ($) {
+                    $("#menu-item-68").css({"display": "none"});
+                    $("#menu-item-178").css({"display": "none"});
+                    $("#menu-item-176").css({"display": "none"});
+                    $("#menu-item-177").css({"display": "none"});
+                    $("#menu-main-menu").append('<li id="menu-item-67" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/member-admin/"><span>Home</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-66" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/training-fee-admin/"><span>Training free</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-68" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-top/"><span>Videos</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-members/"><span>Members</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
+                });
+            </script>
         <?php
+        }
+        else{
+        ?>
+            <script>
+                jQuery(function ($) {
+                    $("#menu-item-68").css({"display": "none"});
+                    $("#menu-item-178").css({"display": "none"});
+                    $("#menu-item-176").css({"display": "none"});
+                    $("#menu-item-177").css({"display": "none"});
+                    $("#menu-main-menu").append('<li id="menu-item-68" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/member-top/"><span>Home</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/training-fee-member/"><span>Tranning fee</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
+                });
+            </script>
+            <?php
+        }
+    }
+    if(strpos($_SERVER['REQUEST_URI'],'videos-detail')){
+        if (isset($_SESSION['admin_login']))
+        {
+            ?>
+            <script>
+                jQuery(function($){
+                    $("#menu-item-68").css({"display":"none"});
+                    $("#menu-item-178").css({"display":"none"});
+                    $("#menu-item-176").css({"display":"none"});
+                    $("#menu-item-177").css({"display":"none"});
+                    $("#menu-main-menu").append('<li id="menu-item-67" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/member-admin/"><span>Home</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-66" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/training-fee-admin/"><span>Training free</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-68" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-top/"><span>Videos</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/admin-members/"><span>Members</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
+                });
+            </script>
+            <?php
+        }
+        else{
+            ?>
+            <script>
+                jQuery(function($) {
+                    $("#menu-item-68").css({"display":"none"});
+                    $("#menu-item-178").css({"display":"none"});
+                    $("#menu-item-176").css({"display":"none"});
+                    $("#menu-item-177").css({"display":"none"});
+                    $("#menu-main-menu").append('<li id="menu-item-68" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/member-top/"><span>Home</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/training-fee-member/"><span>Tranning fee</span></a> </li>');
+                    $("#menu-main-menu").append('<li id="menu-item-178" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home"><a href="/log-out/"><span>Logout</span></a> </li>');
+                });
+            </script>
+    <?php
+        }
     }
     ?>
     <script>
@@ -235,6 +294,30 @@ if( $back_to_top_class == 'hide' ){
         s0.parentNode.insertBefore(s1,s0);
     })();
 </script>
+    <script src="https://vjs.zencdn.net/7.1.0/video.js"></script>
 <!--End of Tawk.to Script-->
 </body>
 </html>
+<?php
+if (!isset($_SESSION['admin_login']))
+{
+    ?>
+    <script>
+        jQuery(function($){
+            $(document).ready(function() {
+                $(document).on("contextmenu",function(){
+                    return false;
+                });
+            });
+        });
+        $(document).keydown(function (event) {
+            if (event.keyCode == 123) { // Prevent F12
+                return false;
+            } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
+                return false;
+            }
+        });
+    </script>
+    <?php
+}
+?>

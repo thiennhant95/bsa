@@ -13,7 +13,7 @@ function cm_create_menu_member()
 {
         global $wpdb;
         $table_products = $wpdb->prefix."members";
-        $data = "SELECT * FROM $table_products WHERE type=0";
+        $data = "SELECT * FROM $table_products WHERE type=0 ORDER BY id DESC";
         $product_list =$wpdb->get_results($data);
         ?>
     <style>
@@ -26,15 +26,21 @@ function cm_create_menu_member()
 
         .alert-danger {
             background-color: #d53239;
+            margin-bottom: 3%;
         }
 
         .alert-success {
             background-color: #5cb85c;
+            margin-bottom: 3%;
         }
         input[type=submit],input[type=reset],input[type=button]{
             background-color: #3d4247;
             border-radius: 10px!important;
             width: 20%;
+        }
+        .add-member:hover{
+            text-decoration: none;
+            color: #AF0000!important;
         }
     </style>
         <div class="content-wrapper" <?php if (isset($_GET['type'])) echo 'style="display: none"'?>>
@@ -64,7 +70,7 @@ function cm_create_menu_member()
                     ?>
                     </p>
                     <!--            <br/>-->
-                    <span class="box-title" style="float: right"><a class="" href="/admin-members/?type=add">Add Members</a></span>
+                    <span class="box-title" style="float: right;background-color: #0A246A;margin-bottom: 1%;padding: 1.5%"><a style="color: #ffffff;font-weight: bold;font-size: 16px" class="add-member" href="/admin-members/?type=add">Add Members</a></span>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
@@ -94,7 +100,7 @@ function cm_create_menu_member()
                                 <td><?php echo $row->member_date ?></td>
                                 <td id="status<?php echo $row->id ?>"><?php echo $row->	member_status==1?'<span class="badge bg-green">Đang hoạt động</span>':'<span class="badge bg-red">Bị khóa</span>'?></td>
                                 <td>
-                                    <a class="btn btn-info" href="<?php echo home_url('admin-members/?type=update&email='.$row->member_email)?>">Edit</a>
+                                    <a style="color: #0A246A" class="btn btn-info" href="<?php echo home_url('admin-members/?type=update&email='.$row->member_email)?>">Edit</a>
                                 </td>
                             </tr>
                             <?php
@@ -227,7 +233,7 @@ function cm_create_menu_member()
                                 </tr>
                                 <tr>
                                     <td><span>Password</span></td>
-                                    <td><input type="password" name="password" required></td>
+                                    <td><input type="password" name="password" minlength="6" required></td>
                                 </tr>
                                 <tr>
                                     <td><span>Email</span> </td>

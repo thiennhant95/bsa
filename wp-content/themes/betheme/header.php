@@ -1,12 +1,23 @@
 <?php
-
-if (strpos($_SERVER['REQUEST_URI'],'admin-top') || strpos($_SERVER['REQUEST_URI'],'admin-members'))
+//print_r($_SESSION);
+//print_r($_COOKIE);
+if (isset($_COOKIE['username'])){
+    $_SESSION['login'] = 1;
+    $_SESSION['member_username'] = $_COOKIE['username'];
+}
+if (strpos($_SERVER['REQUEST_URI'],'admin-top') || strpos($_SERVER['REQUEST_URI'],'admin-members') || strpos($_SERVER['REQUEST_URI'],'training-fee-admin') || strpos($_SERVER['REQUEST_URI'],'member-admin'))
 {
-if (!isset($_SESSION['login']) && !isset($_SESSION['member_username']))
+    if (!isset($_SESSION['login']) && !isset($_SESSION['member_username']))
 {
-    $url = home_url('/');
-    wp_redirect($url);
-    exit;
+        if (isset($_COOKIE['username'])) {
+            $_SESSION['login'] = 1;
+            $_SESSION['member_username'] = $_COOKIE['username'];
+        }
+        if (!isset($_COOKIE['username'])) {
+            $url = home_url('/');
+            wp_redirect($url);
+            exit;
+        }
 }
 else{
     $table_team = $wpdb->prefix."members";
@@ -247,7 +258,7 @@ if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
                                         <div class="wpb_wrapper">
                                             <div class="wpb_text_column wpb_content_element  slogan-text">
                                                 <div class="wpb_wrapper">
-                                                    <p>Nhận thức và Tư Duy là công cụ tốt nhất giúp đánh thức các khả năng của bạn trong môi trường kinh doanh!</p>
+                                                    <p>[Perception and Thinking] là công cụ tốt nhất giúp đánh thức các khả năng của bạn trong môi trường kinh doanh!</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -263,7 +274,7 @@ if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
             ?>
 		</div>
 		
-		<?php 
+		<?php
 			// Single Post | Template: Intro
 			if( get_post_meta( mfn_ID(), 'mfn-post-template', true ) == 'intro' ){
 				get_template_part( 'includes/header', 'single-intro' );
@@ -275,8 +286,7 @@ if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
 // Omit Closing PHP Tags
 ?>
         <?php
-
-        if (isset($_SESSION['login']) && $_SESSION['login']==1)
+        if (isset($_SESSION['login']) && $_SESSION['login']==1 && !isset($_SESSION['admin_login']))
         {
             ?>
             <script>
@@ -289,7 +299,7 @@ if (strpos($_SERVER['REQUEST_URI'],'input-new-password'))
             </script>
             <?php
         }
-        if (isset($_SESSION['login']) && $_SESSION['login']==2)
+        elseif (isset($_SESSION['login']) && $_SESSION['login']==1 && isset($_SESSION['admin_login']))
         {
             ?>
             <script>

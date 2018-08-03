@@ -29,14 +29,22 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
             wp_redirect($url);
             exit;
         }
+        if (date('Y-m-d')>='2018-08-08')
+        {
+            $date =date('Y-m-d H:i:s');
+        }
+        else
+        {
+            $date=date('Y-m-08 00:00:00');
+        }
         $insert = $wpdb->insert($table_products, array(
                 "member_username"=>htmlspecialchars($_POST['username']),
-                "member_password"=>htmlspecialchars($_POST['password']),
+                "member_password"=>htmlspecialchars(sha1($_POST['password'])),
                 "member_email"=>htmlspecialchars($_POST['email']),
                 "member_company"=>htmlspecialchars($_POST['company']),
                 "member_phone"=>$_POST['phone'],
                 "member_status"=>$_POST['status'],
-                "member_date"=>date('Y-m-d H:i:s'),
+                "member_date"=>$date,
                 "week"=>'["1"]',
                 "type"=>0
             )

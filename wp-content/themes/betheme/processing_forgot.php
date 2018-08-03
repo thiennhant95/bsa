@@ -11,6 +11,13 @@ function generateRandomString($length = 10) {
 global $wpdb;
 $table_team = $wpdb->prefix . "members";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_POST['g-recaptcha-response']==''){
+        $_SESSION['thongbaoloi'] ="3";
+        $url = home_url('forgot-password');
+        wp_redirect($url);
+        exit;
+    }
+
     if ($_POST['username']==null || $_POST['email']==null){
         $_SESSION['thongbaoloi'] ="Username và Email không thể rổng";
         $url = home_url('forgot-password');
@@ -33,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
         else{
-            $_SESSION['thongbaoloi'] ="Đã xãy ra lỗi trong quá trình gửi đi. Vui lòng thử lại";
+            $_SESSION['thongbaoloi'] ="2";
             $url = home_url('forgot-password');
             wp_redirect($url);
             exit;
@@ -42,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 }
 else {
-    $_SESSION['thongbaoloi'] ="Không thể thực hiện. Vui lòng nhập lại";
+    $_SESSION['thongbaoloi'] ="2";
     $url = home_url('forgot-password');
     wp_redirect($url);
     exit;
